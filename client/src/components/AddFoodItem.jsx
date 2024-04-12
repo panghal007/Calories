@@ -8,7 +8,7 @@ const AddFoodItem = () => {
     const [dailyCalories, setDailyCalories] = useState(0); // Track daily calorie intake
     const [dailyCalorieGoal, setDailyCalorieGoal] = useState(2000); // Default daily calorie goal
 
-
+    const userId = '1';
 
     const handleQueryChange = (event) => {
         setQuery(event.target.value);
@@ -72,6 +72,7 @@ const AddFoodItem = () => {
                 //     timestamp: new Date()
                 // })
                 body: JSON.stringify(nutritionInfo.foods.map(food => ({
+                    userId:userId,
                     foodName: food.food_name,
                     quantity: food.serving_qty,
                     servingSize: 'serving', // Assuming serving size is constant for all foods
@@ -79,7 +80,7 @@ const AddFoodItem = () => {
                     timestamp: new Date()
                 })))
             });
-            console.log(response);
+            // console.log(response);
             if (!response.ok) {
                 throw new Error('Failed to log food intake');
             }
