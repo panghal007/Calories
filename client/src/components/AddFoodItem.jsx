@@ -75,8 +75,10 @@ const AddFoodItem = () => {
                     userId:userId,
                     foodName: food.food_name,
                     quantity: food.serving_qty,
-                    servingSize: 'serving', // Assuming serving size is constant for all foods
+                    servingSize: food.serving_weight_grams, // Assuming serving size is constant for all foods
                     calories: food.nf_calories,
+                    proteins: food.nf_protein,
+                    fats: food.nf_total_fat,
                     timestamp: new Date()
                 })))
             });

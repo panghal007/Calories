@@ -5,8 +5,10 @@ const foodSchema = new Schema({
     userId: {  type: String,  required: true }, // Reference to the user who logged the intake
     name: { type: String, required: true },
     quantity: { type: Number, required: true },
-    servingSize: { type: String, required: true },
+    servingSize: { type: Number, required: true },
     calories:{ type: Number, required: true},
+    proteins:{ type: Number, required: true},
+    fats:{ type: Number, required: true},
     timestamp: { type: Date, default: Date.now }
 });
 

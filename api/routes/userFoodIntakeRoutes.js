@@ -19,8 +19,10 @@ router.get('/user-calories/:userId/:date', async (req, res) => {
 
         // Calculate total calories consumed
         const totalCalories = userFoodIntake.reduce((total, intake) => total + intake.calories, 0);
+        const totalProteins = userFoodIntake.reduce((total1, intake) => total1 + intake.proteins, 0);
+        const totalFats = userFoodIntake.reduce((total2, intake) => total2 + intake.fats, 0);
 
-        res.json({ userId, date, totalCalories });
+        res.json({ userId, date, totalCalories ,totalFats,totalProteins});
     } catch (error) {
         console.error('Error fetching user calories:', error);
         res.status(500).json({ message: 'Server error' });
@@ -62,6 +64,8 @@ router.get('/user-calories/:userId/:date', async (req, res) => {
                 quantity: foodItem.quantity, 
                 servingSize: foodItem.servingSize, 
                 calories: foodItem.calories,
+                proteins:foodItem.proteins,
+                fats:foodItem.fats,
                 timestamp: foodItem.timestamp 
             });
 

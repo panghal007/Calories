@@ -4,6 +4,8 @@ const UserCalories = () => {
     const [userId, setUserId] = useState('');
     const [date, setDate] = useState('');
     const [totalCalories, setTotalCalories] = useState(null);
+    const [totalFats, setTotalFats] = useState(null);
+    const [totalProteins, setTotalProteins] = useState(null);
 
     const handleUserIdChange = (event) => {
         setUserId(event.target.value);
@@ -20,6 +22,8 @@ const UserCalories = () => {
             const response = await fetch(`http://localhost:3000/api/user-calories/${userId}/${date}`);
             const data = await response.json();
             setTotalCalories(data.totalCalories);
+            setTotalFats(data.totalFats);
+            setTotalProteins(data.totalProteins);
         } catch (error) {
             console.error('Error fetching user calories:', error);
         }
@@ -42,6 +46,12 @@ const UserCalories = () => {
 
             {totalCalories !== null && (
                 <p>Total calories consumed on {date}: {totalCalories}</p>
+            )}
+            {totalFats !== null && (
+                <p>Total Fats consumed on {date}: {totalFats}</p>
+            )}
+            {totalProteins !== null && (
+                <p>Total Proteins consumed on {date}: {totalProteins}</p>
             )}
         </div>
     );
