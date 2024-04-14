@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 
 const AddFoodItem = () => {
     const [query, setQuery] = useState('');
@@ -7,8 +7,34 @@ const AddFoodItem = () => {
     const [error, setError] = useState(null);
     const [dailyCalories, setDailyCalories] = useState(0); // Track daily calorie intake
     const [dailyCalorieGoal, setDailyCalorieGoal] = useState(2000); // Default daily calorie goal
+    const [username, setUsername] = useState('');
 
-    const userId = '1';
+    // Function to decode JWT token
+    
+    const decodeToken = (token) => {
+        try {
+          const decoded = JSON.parse(atob(token.split('.')[1]));
+          console.log('Decoded token:', decoded);
+          if (decoded && decoded.userId) {
+            setUsername(decoded.userId);
+          } else {
+            console.error('Error: Decoded token does not contain user information');
+          }
+        } catch (error) {
+          console.error('Error decoding token:', error);
+        }
+      };
+      
+        // Fetch user token from localStorage on component mount
+        useEffect(() => {
+            const token = localStorage.getItem('token');
+            console.log('Token from localStorage:', token);
+
+            if (token) {
+                decodeToken(token);
+            }
+        }, []);
+
 
     const handleQueryChange = (event) => {
         setQuery(event.target.value);
@@ -47,11 +73,7 @@ const AddFoodItem = () => {
             setLoading(false);
         }
     };
-    // useEffect(() => {
-    //     if (nutritionInfo) {
-    //         handleSubmit();
-    //     }
-    // }, [nutritionInfo]);
+
     
     const handleSubmit = async (nutritionInfo) => {
         //  event.preventDefault();
@@ -72,7 +94,7 @@ const AddFoodItem = () => {
                 //     timestamp: new Date()
                 // })
                 body: JSON.stringify(nutritionInfo.foods.map(food => ({
-                    userId:userId,
+                    userId: username,
                     foodName: food.food_name,
                     quantity: food.serving_qty,
                     servingSize: food.serving_weight_grams, // Assuming serving size is constant for all foods

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const foodSchema = new Schema({
-    userId: {  type: String,  required: true }, // Reference to the user who logged the intake
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the user who logged the intake
     name: { type: String, required: true },
     quantity: { type: Number, required: true },
     servingSize: { type: Number, required: true },
