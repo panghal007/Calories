@@ -5,6 +5,7 @@ const cors = require('cors')
 const authenticateUser = require('./middleware/authentication')
 
 const routes = require('./routes/userRoute')
+const calorieRoute = require('./routes/calculatorRoute')
 
 app.use(express.json());
 app.use(cors())
@@ -12,6 +13,7 @@ app.use(cors())
 const connectDB = require('./db/connect')
 
 app.use('/api/v1',routes)
+app.use('/api/v1',calorieRoute)
 
 app.get('/' , (req,res) => {
     res.send('<h1>Hello World</h1>')

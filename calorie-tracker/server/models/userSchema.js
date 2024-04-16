@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
-const { required } = require('joi');
+const { joi } = require('joi');
 
 const userSchema = new mongoose.Schema({
 
@@ -48,7 +48,11 @@ const userSchema = new mongoose.Schema({
     },
     weightLossRate:{
         type:Number,
-        enum:[0.9,0.7,0.5]
+        enum:[0.25,0.5,1]
+    },
+    weightGainRate:{
+        type:Number,
+        enum:[0.25,0.5,1]
     }
 
 },
@@ -82,8 +86,6 @@ userSchema.methods.calculateBMR = function(){
     return bmr
 }
 
-userSchema.methods.
-
 userSchema.methods.calculateTDEE = function(){
     const bmr = this.calculateBMR();
     let tdee = bmr;
@@ -109,6 +111,42 @@ userSchema.methods.calculateTDEE = function(){
     return tdee;
 }
 
+userSchema.methods.weightLoss = function() {
+    const tdee = this.calculateTDEE()
+    let targetCalories
+
+    if(this.weightLossRate === 0.25){
+        targetCalories = tdee - 250
+    }
+    else if(this.weightLossRate === 0.5){
+        targetCalories = tdee - 500
+    }
+    else if(this.weightLossRate === 1){
+        targetCalories = tdee - 1000
+    }
+
+    return targetCalories
+    
+}
+
+userSchema.methods.weightGain = function() {
+    const tdee = this.calculateTDEE()
+    let targetCalories
+
+    if(this.weightGainRate === 0.25){
+        targetCalories = tdee + 250
+    }
+    else if(this.weightGainRate === 0.5){
+        targetCalories = tdee + 500
+    }
+    else if(this.weightGainRate === 1){
+        targetCalories = tdee + 1000
+    }
+
+    return targetCalories
+    
+}
+
 userSchema.methods.dailyProtein = function(){
     let proteinMultiplier
 
@@ -128,7 +166,23 @@ userSchema.methods.dailyProtein = function(){
         proteinMultiplier = 2.2
     }
 
-    return this.weight*proteinMultiplier
+    return Math.ceil(this.weight*proteinMultiplier)
+}
+
+userSchema.methods.dailyFatsNeeds = function(){
+    return this.weight
+}
+
+userSchema.methods.dailyCarb = function() {
+    let carbRequired
+    if(this.lifestyle === 'sedentary' || this.lifestyle === 'lightlyactive'){
+        carbRequired = Math.ceil((0.45*this.calculateTDEE())/4)
+
+    }
+    else{
+        carbRequired = Math.ceil((0.65*this.calculateTDEE())/4)
+    }
+    return carbRequired
 }
 
 module.exports = mongoose.model('User',userSchema)

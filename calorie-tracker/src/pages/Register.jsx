@@ -16,7 +16,8 @@
         username: '',
         email:'',
         password: '',
-        wieightLossRate:''
+        weightLossRate:'',
+        weightGainRate: ''
     });
 
     const handleSubmit = (e) => {
@@ -25,11 +26,11 @@
     }
 
 
-    const handleSubmit2 = async(e) =>{
+    const handleSubmit2 = (e) =>{
         e.preventDefault()
         
-        const {username, email, password, age, height, weight, targetWeight,gender,lifestyle,wieightLossRate} = userData
-        await axios.post('http://localhost:5000/api/v1/register',{username, email, password, age, height, weight, targetWeight,gender,lifestyle,wieightLossRate})
+        const {username, email, password, age, height, weight, targetWeight,gender,lifestyle,weightLossRate,weightGainRate} = userData
+        axios.post('http://localhost:5000/api/v1/register',{username, email, password, age, height, weight, targetWeight,gender,lifestyle,weightLossRate,weightGainRate})
         .then(window.location.href='/login')    
         .catch(err => console.log(err))
     }
@@ -64,16 +65,16 @@
                             </label>
                         </fieldset>
 
-                        <label>Weight:</label>
+                        <label>Weight (in Kg):</label>
                         <input type="number" name="weight" id="weight" value={userData.weight} onChange={handleChange} />
-                        <label>Target Weight:</label>
+                        <label>Target Weight (in kg):</label>
                         <input type="number" name="targetWeight" id="targetWeight" value={userData.targetWeight} onChange={handleChange} />
                     </div>
                 );
             case 2:
                 return (
                     <div>
-                        <label>Height:</label>
+                        <label>Height (in cm):</label>
                         <input type="number" name="height" id="height" value={userData.height} onChange={handleChange} />
 
                         <fieldset>
@@ -100,11 +101,37 @@
                             </label>
                         </fieldset>
                         
-                        {/* if(userData.weight > userData.targetWeight){
-                        <fieldset>
-                            <legend>Weight Loss Rate</legend>
-                        </fieldset>
-                        } */}
+                         {userData.weight > userData.targetWeight ? (
+                            <fieldset>
+                                <legend>Weight Loss</legend>
+                                <label>
+                                    <input type="radio" name='weightLossRate' value={0.25} checked={userData.weightLossRate === '0.25'} onChange={handleChange}/>
+                                    0.25 Kg/week
+                                </label>
+                                <label>
+                                    <input type="radio" name='weightLossRate' value={0.5} checked={userData.weightLossRate === '0.5'} onChange={handleChange}/>
+                                    0.5 Kg/week
+                                </label>
+                                <label>
+                                    <input type="radio" name='weightLossRate' value={1} checked={userData.weightLossRate === '1'} onChange={handleChange}/>
+                                    1 Kg/week
+                                </label>
+                            </fieldset>
+                         ): (<fieldset>
+                            <legend>Weight Gain</legend>
+                                <label>
+                                    <input type="radio" name='weightGainRate' value={0.25} checked={userData.weightGainRate === '0.25'} onChange={handleChange}/>
+                                    0.25 Kg/week
+                                </label>
+                                <label>
+                                    <input type="radio" name='weightGainRate' value={0.5} checked={userData.weightGainRate === '0.5'} onChange={handleChange}/>
+                                    0.5 Kg/week
+                                </label>
+                                <label>
+                                    <input type="radio" name='weightGainRate' value={1} checked={userData.weightGainRate === '1'} onChange={handleChange}/>
+                                    1 Kg/week
+                                </label>
+                         </fieldset>)} 
                             
                     </div>
 

@@ -8,9 +8,14 @@ const Login = () => {
   const handleSubmit = async (e) =>{
     e.preventDefault()
 
-    await axios.post('http://localhost:5000/api/v1/login',{email,password})
-    .then(result => console.log(result))
-    .catch(err => console.log(err))
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      window.location.href='/dashboard'
+    } catch (error) {
+      console.error('Login error:', error);
+      // Handle login error, e.g., show error message to the user
+    }
   }
 
   return (
@@ -35,6 +40,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
+            {/* <Link to='/dashboard'><button type='submit'>Login</button></Link> */}
             <button type='submit'>Login</button>
             
             <p>Not a User</p>
