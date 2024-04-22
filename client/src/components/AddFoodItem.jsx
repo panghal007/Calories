@@ -1,4 +1,5 @@
 import React, { useState ,useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const AddFoodItem = () => {
     const [query, setQuery] = useState('');
@@ -14,7 +15,7 @@ const AddFoodItem = () => {
     const decodeToken = (token) => {
         try {
           const decoded = JSON.parse(atob(token.split('.')[1]));
-          console.log('Decoded token:', decoded);
+        //   console.log('Decoded token:', decoded);
           if (decoded && decoded.userId) {
             setUsername(decoded.userId);
           } else {
@@ -27,8 +28,11 @@ const AddFoodItem = () => {
       
         // Fetch user token from localStorage on component mount
         useEffect(() => {
-            const token = localStorage.getItem('token');
-            console.log('Token from localStorage:', token);
+            const dataString=localStorage.getItem('Data');
+            const data=JSON.parse(dataString);
+            const token =data.token;
+            
+            // console.log('Token from localStorage:', token);
 
             if (token) {
                 decodeToken(token);
@@ -164,6 +168,7 @@ const AddFoodItem = () => {
                 </label>
                 <h3>Daily Calorie Goal: {dailyCalorieGoal}</h3>
             </div>
+            <Link to="/userCalories"><button >Check Calories</button></Link>
         </div>
     );
 };

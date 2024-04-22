@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
 
 const UserCalories = () => {
     const [userId, setUserId] = useState('');
@@ -6,10 +6,43 @@ const UserCalories = () => {
     const [totalCalories, setTotalCalories] = useState(null);
     const [totalFats, setTotalFats] = useState(null);
     const [totalProteins, setTotalProteins] = useState(null);
+    const [username, setUsername] = useState('');
 
-    const handleUserIdChange = (event) => {
-        setUserId(event.target.value);
-    };
+   
+    useEffect(() => {
+        // Function to decode the JWT token stored in local storage
+        const decodeToken = () => {
+          
+            const dataString=localStorage.getItem('Data');
+            const data=JSON.parse(dataString);
+            const token =data.token;
+            setUsername(data.userData.username);
+            console.log('Token from localStorage:', token);
+          
+          if (token) {
+            try {
+              const decoded = JSON.parse(atob(token.split('.')[1]));
+              console.log('Decoded token:', decoded);
+              if (decoded && decoded.userId) {
+                setUserId(decoded.userId);
+              } else {
+                console.error('Error: Decoded token does not contain user information');
+              }
+            } catch (error) {
+              console.error('Error decoding token:', error);
+            }
+          } else {
+            console.error('Token not found in local storage');
+          }
+        };
+    
+        // Call the function to decode token when Dashboard component mounts
+        decodeToken();
+      }, []); // Empty dependency array ensures the effect runs only once when component mounts
+
+    // const handleUserIdChange = (event) => {
+    //     setUserId(event.target.value);
+    // };
 
     const handleDateChange = (event) => {
         setDate(event.target.value);
@@ -35,7 +68,8 @@ const UserCalories = () => {
             <form onSubmit={handleSubmit}>
                 <label>
                     User ID:
-                    <input type="text" value={userId} onChange={handleUserIdChange} />
+                     {username}
+                    {/* <input type="text" value={userId} onChange={handleUserIdChange} /> */}
                 </label>
                 <label>
                     Date:

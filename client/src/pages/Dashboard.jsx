@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { useUserContext } from '../UserContext.jsx';
 
 // Define the Dashboard component
 const Dashboard = () => {
   const [userId, setUserId] = useState('');
+  const [userData, setuserData] = useState('');
+  
+  const { user } = useUserContext();
+
 
   useEffect(() => {
     // Function to decode the JWT token stored in local storage
     const decodeToken = () => {
-      const token = localStorage.getItem('token');
+      
+      const dataString=localStorage.getItem('Data');
+      const data=JSON.parse(dataString);
+      const token =data.token;
+      setuserData(data.userData.username);
+      
       if (token) {
         try {
           const decoded = JSON.parse(atob(token.split('.')[1]));
-          console.log('Decoded token:', decoded);
+          // console.log('Decoded token:', decoded);
           if (decoded && decoded.userId) {
             setUserId(decoded.userId);
           } else {
@@ -33,7 +44,7 @@ const Dashboard = () => {
   // Function to send POST request to the backend using axios
   const sendDataToBackend = async () => {
     try {
-      const backendUrl = `http://localhost:5000/api/v1/${userId}`; // Replace with actual backend URL
+      const backendUrl = `http://localhost:3000/api/${userId}`; // Replace with actual backend URL
 
       const response = await axios.post(backendUrl, { userId });
 
@@ -55,6 +66,8 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Dashboard</h1>
+      <h1>Welcome, {userData}!</h1>
+      <Link to="/add"><button >Add Food</button></Link>
     </div>
   );
 };

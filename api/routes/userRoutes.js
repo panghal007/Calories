@@ -6,6 +6,7 @@ const registerController = require('../controllers/RegisterController')
 const getUserFoodIntake= require('../controllers/UserFoodIntakeController')
 const addUserFoodIntake= require('../controllers/FoodController')
 const authenticateUser = require('../controllers/authenticateUser');
+const calculatorController = require('../controllers/Calculator')
 
 
 // router.route('/login').post(loginController)
@@ -16,6 +17,7 @@ router.post('/login', loginController)
 router.post('/register', registerController)
 router.post('/user-food-intake', addUserFoodIntake) // Change here
 router.get('/user-calories/:userId/:date', getUserFoodIntake)
+router.post('/:userId',calculatorController.calculate)
 
 router.get('/profile', authenticateUser, (req, res) => {
     // Access authenticated user via req.user

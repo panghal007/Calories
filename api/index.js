@@ -25,7 +25,6 @@
 // //gDy1Dtlvd0POMRki
 const express = require('express');
 const mongoose = require('mongoose');
-const userFoodIntakeRoutes = require('./routes/userFoodIntakeRoutes');
 const cors = require('cors'); // Import the cors package
 const routes = require('./routes/userRoutes')
 const app = express();
