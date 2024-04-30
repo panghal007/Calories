@@ -1,7 +1,7 @@
 const User = require('../models/userSchema');
 const calories = require('../models/calorieSchema');
 
-const calculatorController = {
+const calorieController = {
     calculate: async (req, res) => {
         try {
             const { userId } = req.params;
@@ -45,4 +45,4 @@ const calculatorController = {
     }
 };
 
-module.exports = calculatorController;
+module.exports = calorieController;

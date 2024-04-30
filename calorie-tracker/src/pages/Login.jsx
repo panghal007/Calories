@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import {Link} from 'react-router-dom'
+import {Link,Navigate} from 'react-router-dom'
 import axios from 'axios'
 const Login = () => {
   const [email , setEmail] = useState('')
   const [password , setPassword] = useState('')
+  const [loggedIn , setLoggedIn] = useState(false)
   
   const handleSubmit = async (e) =>{
     e.preventDefault()
@@ -11,11 +12,15 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/v1/login', { email, password });
       localStorage.setItem('token', response.data.token);
-      window.location.href='/dashboard'
+      setLoggedIn(true)
     } catch (error) {
       console.error('Login error:', error);
       // Handle login error, e.g., show error message to the user
     }
+  }
+
+  if(loggedIn){
+    return <Navigate to = '/dashboard' />
   }
 
   return (
@@ -44,7 +49,7 @@ const Login = () => {
             <button type='submit'>Login</button>
             
             <p>Not a User</p>
-            <Link to='/'>Register</Link>
+            <Link to='/register'>Register</Link>
         </form>
         
     </div>

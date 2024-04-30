@@ -1,10 +1,12 @@
- import React, { useState } from 'react'
+ import React, { useState,useEffect } from 'react'
  import axios from 'axios'
  import {Link} from 'react-router-dom'
 
 
  const Register = () => {
-  
+    
+    const [show , setShow] = useState(false);
+    const [userId, setUserId] = useState('');
     const [step, setStep] = useState(1);
     const [userData, setUserData] = useState({
         age: '',
@@ -20,19 +22,62 @@
         weightGainRate: ''
     });
 
+
+        
+        const decodeToken = () => {
+          const token = localStorage.getItem('token');
+          if (token) {
+            try {
+              const decoded = JSON.parse(atob(token.split('.')[1]));
+              console.log('Decoded token:', decoded);
+              if (decoded && decoded.userId) {
+                setUserId(decoded.userId);
+              } else {
+                console.error('Error: Decoded token does not contain user information');
+              }
+            } catch (error) {
+              console.error('Error decoding token:', error);
+            }
+          } else {
+            console.error('Token not found in local storage');
+          }
+        };
+    
+        
+
+      const sendDataToBackend = async () => {
+        try {
+          const backendUrl = `http://localhost:5000/api/v1/${userId}`; 
+    
+          const response = await axios.post(backendUrl, { userId });
+    
+          console.log('Calculation result saved successfully:', response.data);
+          
+        } catch (error) {
+          console.error('Error while sending POST request:', error);
+          
+        }
+      };
+
     const handleSubmit = (e) => {
         e.preventDefault()
         setStep(prevStep => prevStep + 1); 
     }
 
 
-    const handleSubmit2 = (e) =>{
+    const handleSubmit2 = async (e) =>{
         e.preventDefault()
         
-        const {username, email, password, age, height, weight, targetWeight,gender,lifestyle,weightLossRate,weightGainRate} = userData
-        axios.post('http://localhost:5000/api/v1/register',{username, email, password, age, height, weight, targetWeight,gender,lifestyle,weightLossRate,weightGainRate})
-        .then(window.location.href='/login')    
-        .catch(err => console.log(err))
+        try {
+            const {username, email, password, age, height, weight, targetWeight,gender,lifestyle,weightLossRate,weightGainRate} = userData
+            const response = await axios.post('http://localhost:5000/api/v1/register',{username, email, password, age, height, weight, targetWeight,gender,lifestyle,weightLossRate,weightGainRate})
+            localStorage.setItem('token', response.data.token);
+            decodeToken();
+            setShow(true);
+            
+        } catch (error) {
+            console.error('Sign Up error:', error.response.data);
+        }
     }
 
     const handleChange = (e) => {
@@ -42,6 +87,16 @@
             [name]: value
         }));
     };
+
+    const handleSubmit3 = async() => {
+        try {
+            await sendDataToBackend();
+            window.location.href="/dashboard"
+            
+        } catch (error) {
+            console.error('Cannot reach dashboard:', error);
+        }
+    }
 
     
 
@@ -88,15 +143,15 @@
                                 Lightly Active
                             </label>
                             <label>
-                                <input type="radio" name="lifestyle" value="moderatelyActive" checked={userData.lifestyle === 'moderatelyActive'} onChange={handleChange} />
+                                <input type="radio" name="lifestyle" value="moderatelyactive" checked={userData.lifestyle === 'moderatelyactive'} onChange={handleChange} />
                                 Moderately Active
                             </label>
                             <label>
-                                <input type="radio" name="lifestyle" value="veryActive" checked={userData.lifestyle === 'veryActive'} onChange={handleChange} />
+                                <input type="radio" name="lifestyle" value="veryactive" checked={userData.lifestyle === 'veryactive'} onChange={handleChange} />
                                 Very Active
                             </label>
                             <label>
-                                <input type="radio" name="lifestyle" value="extremelyActive" checked={userData.lifestyle === 'extremelyActive'} onChange={handleChange} />
+                                <input type="radio" name="lifestyle" value="extremelyactive" checked={userData.lifestyle === 'extremelyactive'} onChange={handleChange} />
                                 Extremely Active
                             </label>
                         </fieldset>
@@ -171,6 +226,7 @@
             />
         </div>
             <button onClick={handleSubmit2}>Submit</button>
+            {show && <button onClick={handleSubmit3}>Go to Dashboard</button>}
             <br/>
             <p>Already a User</p>
             <Link to='/login'>Login</Link>
